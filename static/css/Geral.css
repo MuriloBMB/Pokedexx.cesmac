@@ -1,0 +1,189 @@
+body{
+    background-image: url("../img/fundo.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+.login-box {
+    background: linear-gradient(135deg, #ff3c3c, #ffcc00);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    color: white;
+}
+.main{
+    padding: 10%;
+    display: flex;
+    flex-wrap: wrap;        
+    gap: 20px;              
+    justify-content: space-between;
+}
+
+.card:hover{
+    transform: translateY(-20px);
+    opacity: 1;
+}
+
+
+/* JANELA */
+
+.perfil-window{
+    width: 850px;
+
+    background-color: white;
+
+    border-radius: 25px;
+
+    overflow: hidden;
+
+    box-shadow: 0px 15px 35px rgba(0,0,0,0.25);
+}
+
+
+/* TOPO */
+
+.top-bar{
+    height: 60px;
+
+    background-color: #f1f1f1;
+
+    border-bottom: 1px solid #dcdcdc;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    position: relative;
+}
+
+
+/* BOLINHAS */
+
+.bolinhas{
+    position: absolute;
+
+    left: 20px;
+
+    display: flex;
+
+    gap: 10px;
+}
+
+.bolinhas span{
+    width: 14px;
+
+    height: 14px;
+
+    border-radius: 50%;
+}
+
+.red{
+    background-color: #ff5f57;
+}
+
+.yellow{
+    background-color: #febc2e;
+}
+
+.green{
+    background-color: #28c840;
+}
+
+
+/* TÍTULO */
+
+.titulo-topo{
+    color: #666;
+
+    margin: 0;
+}
+
+
+/* CONTEÚDO */
+
+.perfil-content{
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+
+    padding: 50px;
+}
+
+
+/* FOTO */
+
+.foto-perfil{
+    width: 120px;
+
+    height: 120px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    border: 4px solid #f1f1f1;
+}
+
+.foto-perfil img{
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* INFORMAÇÕES */
+
+.info-user h1{
+    font-size: 55px;
+
+    color: #333;
+}
+
+.info-user p{
+    font-size: 24px;
+
+    color: #777;
+}
+
+
+/* RODAPÉ */
+
+.footer-info{
+    border-top: 1px solid #dcdcdc;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    padding: 30px;
+}
+
+
+.info-box{
+    background-color: #f8f9fa;
+
+    padding: 20px 40px;
+
+    border-radius: 20px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.info-box:hover{
+    transform: translateY(-5px);
+
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+}
