@@ -11,6 +11,7 @@
         <a class="navbar-brand" href="/">Pokédex</a>
         <div>
             <a class="nav-link" href="/pokedex">Meus Pokémons</a>
+            <a class="nav-link" href="/comparar">Comparar</a>
             <a class="nav-link" href="/logout">Sair</a>
         </div>
     </nav>
@@ -20,23 +21,23 @@
         <p class="subtitle">{{ pokemom|length }} espécies registradas</p>
 
         <div class="pokemon-grid">
-            {% for pokemom in pokemom %}
+            {% for p in pokemom %}
             <div class="pokemon-card">
-                <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemom.id }}.png" alt="{{ pokemom.name.english }}">
-                <div class="pokemon-id">#{{ "%03d"|format(pokemom.id) }}</div>
-                <h3>{{ pokemom.name.english }}</h3>
+                <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ p.id }}.png" alt="{{ p.name.english }}">
+                <div class="pokemon-id">#{{ "%03d"|format(p.id) }}</div>
+                <h3>{{ p.name.english }}</h3>
                 <div>
-                    {% for t in pokemom.type %}
+                    {% for t in p.type %}
                     <span class="type-badge type-{{ t }}">{{ t }}</span>
                     {% endfor %}
                 </div>
                 <div class="stats">
-                    <div class="stat"><span>HP</span> {{ pokemom.base.HP }}</div>
-                    <div class="stat"><span>Ataque</span> {{ pokemom.base.Attack }}</div>
-                    <div class="stat"><span>Defesa</span> {{ pokemom.base.Defense }}</div>
-                    <div class="stat"><span>Sp.Atk</span> {{ pokemom.base['Sp. Attack'] }}</div>
-                    <div class="stat"><span>Sp.Def</span> {{ pokemom.base['Sp. Defense'] }}</div>
-                    <div class="stat"><span>Vel.</span> {{ pokemom.base.Speed }}</div>
+                    <div class="stat"><span>HP</span> {{ p.base.HP }}</div>
+                    <div class="stat"><span>Ataque</span> {{ p.base.Attack }}</div>
+                    <div class="stat"><span>Defesa</span> {{ p.base.Defense }}</div>
+                    <div class="stat"><span>Sp.Atk</span> {{ p.base['Sp. Attack'] }}</div>
+                    <div class="stat"><span>Sp.Def</span> {{ p.base['Sp. Defense'] }}</div>
+                    <div class="stat"><span>Vel.</span> {{ p.base.Speed }}</div>
                 </div>
             </div>
             {% endfor %}

@@ -402,6 +402,11 @@ body {
     color: #fff;
 }
 
+.meu-time {
+    outline: 3px solid #667eea;
+    outline-offset: 2px;
+}
+
 .alert-custom {
     background: #ffeaa7;
     border: none;

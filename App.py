@@ -147,5 +147,31 @@ def sortear():
     return render_template('pokedex.html', pokemom_sorteado=sorteados, **calcular_status(sorteados))
 
 
+@app.route('/comparar')
+def comparar():
+    if 'usuario' not in session:
+        return redirect('/login')
+
+    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
+        todos = json.load(f)
+    por_id = {p['id']: p for p in todos}
+
+    usuarios = carregar_usuarios()
+    times = []
+    for u in usuarios:
+        ids = u.get('pokemons', [])
+        pokemons = [por_id[i] for i in ids if i in por_id]
+        if not pokemons:
+            continue
+        times.append({
+            'nome': u['nome'],
+            'user': u['user'],
+            'pokemons': pokemons,
+            'status': calcular_status(pokemons),
+        })
+
+    return render_template('comparar.html', times=times, usuario_logado=session['usuario'])
+
+
 if __name__ == '__main__':
     app.run(debug=False)
