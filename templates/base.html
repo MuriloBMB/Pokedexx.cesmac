@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/geral.css') }}">
+    <title>{% block title %}Pokédex{% endblock %}</title>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    {% block navbar %}
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">Pokédex</a>
+        <div>
+            <a class="nav-link" href="/pokedex">Meus Pokémons</a>
+            <a class="nav-link" href="/comparar">Comparar</a>
+            <a class="nav-link" href="/logout">Sair</a>
+        </div>
+    </nav>
+    {% endblock %}
+    {% block content %}{% endblock %}
+</body>
+</html>

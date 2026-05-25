@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session  # type: ignore[import]
 import json
 import random
 
@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = 'pokemon123'
 
 ARQUIVO_USERS = 'user.json'
-ARQUIVO_POKEMON = 'pokemom.json'
+ARQUIVO_POKEMON = 'pokemon.json'
 
 
 def carregar_usuarios():
@@ -22,18 +22,32 @@ def salvar_usuarios(usuarios):
         json.dump(usuarios, f, indent=4, ensure_ascii=False)
 
 
-CHAVES = ['HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed']
-PREFIXOS = ['hp', 'attack', 'defense', 'sp_attack', 'sp_defense', 'speed']
+def carregar_pokemons():
+    try:
+        with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+
+STATS_MAP = {
+    'hp': 'HP',
+    'attack': 'Attack',
+    'defense': 'Defense',
+    'sp_attack': 'Sp. Attack',
+    'sp_defense': 'Sp. Defense',
+    'speed': 'Speed',
+}
 
 
 def calcular_status(pokemons):
-    totais = dict.fromkeys(PREFIXOS, 0)
+    totais = dict.fromkeys(STATS_MAP, 0)
     for pk in pokemons:
-        for chave, pref in zip(CHAVES, PREFIXOS):
+        for pref, chave in STATS_MAP.items():
             totais[pref] += pk['base'][chave]
     qtd = len(pokemons)
     out = {}
-    for pref in PREFIXOS:
+    for pref in STATS_MAP:
         out[f'total_{pref}'] = totais[pref]
         out[f'media_{pref}'] = totais[pref] // qtd if qtd > 0 else 0
     return out
@@ -43,9 +57,8 @@ def calcular_status(pokemons):
 def home():
     if 'usuario' not in session:
         return redirect('/login')
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
-        pokemons = json.load(f)
-    return render_template('main.html', pokemom=pokemons)
+    pokemons = carregar_pokemons()
+    return render_template('main.html', pokemons=pokemons)
 
 
 @app.route('/cadastrouser', methods=['GET', 'POST'])
@@ -104,8 +117,7 @@ def pokedex():
     if 'usuario' not in session:
         return redirect('/login')
 
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
-        todos = json.load(f)
+    todos = carregar_pokemons()
     por_id = {p['id']: p for p in todos}
 
     ids = []
@@ -118,7 +130,7 @@ def pokedex():
     status = calcular_status(pokemons)
     erro = session.pop('erro', None)
 
-    return render_template('pokedex.html', pokemom_sorteado=pokemons, erro=erro, **status)
+    return render_template('pokedex.html', pokemons=pokemons, erro=erro, **status)
 
 
 @app.route('/sortear')
@@ -127,24 +139,18 @@ def sortear():
         return redirect('/login')
 
     usuarios = carregar_usuarios()
-    usuario_logado = None
-    for u in usuarios:
-        if u['user'] == session['usuario']:
-            usuario_logado = u
-            break
+    usuario_logado = next((u for u in usuarios if u['user'] == session['usuario']), None)
 
     if usuario_logado.get('pokemons'):
         session['erro'] = "Você já sorteou seus pokémons!"
         return redirect('/pokedex')
 
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
-        todos = json.load(f)
-
+    todos = carregar_pokemons()
     sorteados = random.sample(todos, 6)
     usuario_logado['pokemons'] = [p['id'] for p in sorteados]
     salvar_usuarios(usuarios)
 
-    return render_template('pokedex.html', pokemom_sorteado=sorteados, **calcular_status(sorteados))
+    return redirect('/pokedex')
 
 
 @app.route('/comparar')
@@ -152,8 +158,7 @@ def comparar():
     if 'usuario' not in session:
         return redirect('/login')
 
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
-        todos = json.load(f)
+    todos = carregar_pokemons()
     por_id = {p['id']: p for p in todos}
 
     usuarios = carregar_usuarios()

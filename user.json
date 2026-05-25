@@ -1,65 +1,16 @@
 [
     {
         "id": 1,
-        "nome": "a",
-        "user": "a",
-        "senha": "a",
-        "pokemons": [
-            121,
-            8,
-            3,
-            141,
-            138,
-            38
-        ]
-    },
-    {
-        "id": 2,
-        "nome": "g",
-        "user": "g",
-        "senha": "g",
-        "pokemons": [
-            77,
-            87,
-            90,
-            81,
-            123,
-            32
-        ]
-    },
-    {
-        "id": 3,
-        "nome": "admim",
-        "user": "admim",
-        "senha": "admim",
-        "pokemons": []
-    },
-    {
-        "id": 4,
-        "nome": "i",
-        "user": "i",
-        "senha": "i",
-        "pokemons": [
-            10,
-            75,
-            66,
-            39,
-            114,
-            99
-        ]
-    },
-    {
-        "id": 5,
         "nome": "Artur",
         "user": "Tuco",
         "senha": "123",
         "pokemons": [
-            83,
-            108,
-            103,
-            132,
-            6,
-            16
+            118,
+            38,
+            78,
+            63,
+            105,
+            30
         ]
     }
 ]

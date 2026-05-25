@@ -1,29 +1,24 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Geral.css') }}">
-    <title>Login</title>
-</head>
-<body class="auth-page">
-    <div class="auth-card">
-        <h2>Bem-vindo de volta</h2>
-        {% if erro %}
-        <div class="alert-custom">{{ erro }}</div>
-        {% endif %}
-        <form action="/login" method="POST">
-            <div class="mb-3">
-                <label class="form-label">Usuário</label>
-                <input type="text" name="User" class="form-control" placeholder="Seu usuário" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Senha</label>
-                <input type="password" name="Senha" class="form-control" placeholder="Sua senha" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 mb-2">Entrar</button>
-            <a href="/cadastrouser" class="btn btn-secondary w-100">Criar conta</a>
-        </form>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block navbar %}{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h2>Bem-vindo de volta</h2>
+    {% if erro %}
+    <div class="alert-custom">{{ erro }}</div>
+    {% endif %}
+    <form action="/login" method="POST">
+        <div class="mb-3">
+            <label class="form-label">Usuário</label>
+            <input type="text" name="User" class="form-control" placeholder="Seu usuário" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Senha</label>
+            <input type="password" name="Senha" class="form-control" placeholder="Sua senha" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mb-2">Entrar</button>
+        <a href="/cadastrouser" class="btn btn-secondary w-100">Criar conta</a>
+    </form>
+</div>
+{% endblock %}

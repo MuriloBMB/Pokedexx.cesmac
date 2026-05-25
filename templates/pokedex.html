@@ -1,103 +1,86 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Geral.css') }}">
-    <title>Meus Pokémons</title>
-</head>
-<body>
-    <nav class="navbar">
-        <a class="navbar-brand" href="/">Pokédex</a>
-        <div>
-            <a class="nav-link" href="/pokedex">Meus Pokémons</a>
-            <a class="nav-link" href="/comparar">Comparar</a>
-            <a class="nav-link" href="/logout">Sair</a>
+{% extends "base.html" %}
+{% block title %}Meus Pokémons{% endblock %}
+{% block content %}
+<div class="pokedex-page">
+    {% if erro %}
+    <div class="alert-custom">{{ erro }}</div>
+    {% endif %}
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <h2>{{ session['usuario'] }}</h2>
+            <span>Treinador</span>
         </div>
-    </nav>
-
-    <div class="pokedex-page">
-        {% if erro %}
-        <div class="alert-custom">{{ erro }}</div>
-        {% endif %}
-
-        <div class="profile-card">
-            <div class="profile-header">
-                <h2>{{ session['usuario'] }}</h2>
-                <span>Treinador</span>
-            </div>
-            <div class="profile-body">
-                <div class="trainer-info">
-                    <img src="https://i.pravatar.cc/150?img={{ session['usuario'] | length }}" alt="avatar" class="trainer-avatar">
-                    <div>
-                        <div class="trainer-name">{{ session['usuario'] }}</div>
-                        <div class="trainer-title">Pokédex Trainer</div>
-                    </div>
-                </div>
-
-                {% if pokemom_sorteado %}
-                <div class="stats-section">
-                    <h4>Status totais</h4>
-                    <div class="stats-grid">
-                        <div class="stat-box"><div class="stat-label">HP</div><div class="stat-value">{{ total_hp }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Ataque</div><div class="stat-value">{{ total_attack }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Defesa</div><div class="stat-value">{{ total_defense }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Sp.Atk</div><div class="stat-value">{{ total_sp_attack }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Sp.Def</div><div class="stat-value">{{ total_sp_defense }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Vel.</div><div class="stat-value">{{ total_speed }}</div></div>
-                    </div>
-                </div>
-
-                <div class="stats-section">
-                    <h4>Médias</h4>
-                    <div class="stats-grid">
-                        <div class="stat-box"><div class="stat-label">HP</div><div class="stat-value">{{ media_hp }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Ataque</div><div class="stat-value">{{ media_attack }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Defesa</div><div class="stat-value">{{ media_defense }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Sp.Atk</div><div class="stat-value">{{ media_sp_attack }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Sp.Def</div><div class="stat-value">{{ media_sp_defense }}</div></div>
-                        <div class="stat-box"><div class="stat-label">Vel.</div><div class="stat-value">{{ media_speed }}</div></div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        {% if pokemom_sorteado %}
-        <h3 style="font-weight: 700; margin-bottom: 1rem;">Sua equipe</h3>
-        <div class="team-grid">
-            {% for pokemon in pokemom_sorteado %}
-            <div class="team-card">
-                <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" alt="{{ pokemon.name.english }}">
-                <h4>{{ pokemon.name.english }}</h4>
+        <div class="profile-body">
+            <div class="trainer-info">
+                <img src="https://i.pravatar.cc/150?img={{ session['usuario'] | length }}" alt="avatar" class="trainer-avatar">
                 <div>
-                    {% for t in pokemon.type %}
-                    <span class="type-badge type-{{ t }}">{{ t }}</span>
-                    {% endfor %}
-                </div>
-                <div class="team-stats">
-                    <div class="ts"><span>HP</span> {{ pokemon.base.HP }}</div>
-                    <div class="ts"><span>Ataque</span> {{ pokemon.base.Attack }}</div>
-                    <div class="ts"><span>Defesa</span> {{ pokemon.base.Defense }}</div>
-                    <div class="ts"><span>Sp.Atk</span> {{ pokemon.base['Sp. Attack'] }}</div>
-                    <div class="ts"><span>Sp.Def</span> {{ pokemon.base['Sp. Defense'] }}</div>
-                    <div class="ts"><span>Vel.</span> {{ pokemon.base.Speed }}</div>
+                    <div class="trainer-name">{{ session['usuario'] }}</div>
+                    <div class="trainer-title">Pokédex Trainer</div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <h3 style="font-weight: 700; margin-bottom: 1rem;">Sua equipe</h3>
-        <div class="team-grid">
-            {% for i in range(6) %}
-            <div class="empty-slot">Vazio</div>
-            {% endfor %}
-        </div>
-        {% endif %}
 
-        <div style="text-align: center;">
-            <a href="/sortear" class="btn-draw">Sortear Pokémons</a>
+            {% if pokemons %}
+            <div class="stats-section">
+                <h4>Status totais</h4>
+                <div class="stats-grid">
+                    <div class="stat-box"><div class="stat-label">HP</div><div class="stat-value">{{ total_hp }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Ataque</div><div class="stat-value">{{ total_attack }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Defesa</div><div class="stat-value">{{ total_defense }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Sp.Atk</div><div class="stat-value">{{ total_sp_attack }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Sp.Def</div><div class="stat-value">{{ total_sp_defense }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Vel.</div><div class="stat-value">{{ total_speed }}</div></div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h4>Médias</h4>
+                <div class="stats-grid">
+                    <div class="stat-box"><div class="stat-label">HP</div><div class="stat-value">{{ media_hp }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Ataque</div><div class="stat-value">{{ media_attack }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Defesa</div><div class="stat-value">{{ media_defense }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Sp.Atk</div><div class="stat-value">{{ media_sp_attack }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Sp.Def</div><div class="stat-value">{{ media_sp_defense }}</div></div>
+                    <div class="stat-box"><div class="stat-label">Vel.</div><div class="stat-value">{{ media_speed }}</div></div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
-</body>
-</html>
+
+    <h3 class="section-title">Sua equipe</h3>
+    {% if pokemons %}
+    <div class="team-grid">
+        {% for pokemon in pokemons %}
+        <div class="team-card">
+            <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" alt="{{ pokemon.name.english }}">
+            <h4>{{ pokemon.name.english }}</h4>
+            <div>
+                {% for t in pokemon.type %}
+                <span class="type-badge type-{{ t }}">{{ t }}</span>
+                {% endfor %}
+            </div>
+            <div class="team-stats">
+                <div class="ts"><span>HP</span> {{ pokemon.base.HP }}</div>
+                <div class="ts"><span>Ataque</span> {{ pokemon.base.Attack }}</div>
+                <div class="ts"><span>Defesa</span> {{ pokemon.base.Defense }}</div>
+                <div class="ts"><span>Sp.Atk</span> {{ pokemon.base['Sp. Attack'] }}</div>
+                <div class="ts"><span>Sp.Def</span> {{ pokemon.base['Sp. Defense'] }}</div>
+                <div class="ts"><span>Vel.</span> {{ pokemon.base.Speed }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="team-grid">
+        {% for i in range(6) %}
+        <div class="empty-slot">Vazio</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center">
+        <a href="/sortear" class="btn-draw">Sortear Pokémons</a>
+    </div>
+</div>
+{% endblock %}
