@@ -1,7 +1,6 @@
 from flask import Flask, request, redirect, render_template, session
 import json
 import random
-import os
 
 app = Flask(__name__)
 app.secret_key = 'pokemon123'
@@ -10,328 +9,169 @@ ARQUIVO_USERS = 'user.json'
 ARQUIVO_POKEMON = 'pokemom.json'
 
 
-# ================= FUNÇÕES ====================
-
 def carregar_usuarios():
-    if not os.path.exists(ARQUIVO_USERS):
+    try:
+        with open(ARQUIVO_USERS, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
         return []
-
-    with open(ARQUIVO_USERS, 'r', encoding='utf-8') as arquivo:
-        try:
-            return json.load(arquivo)
-        except:
-            return []
 
 
 def salvar_usuarios(usuarios):
-    with open(ARQUIVO_USERS, 'w', encoding='utf-8') as arquivo:
-        json.dump(usuarios, arquivo, indent=4, ensure_ascii=False)
+    with open(ARQUIVO_USERS, 'w', encoding='utf-8') as f:
+        json.dump(usuarios, f, indent=4, ensure_ascii=False)
 
 
-# ================== HOME ====================
+CHAVES = ['HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed']
+PREFIXOS = ['hp', 'attack', 'defense', 'sp_attack', 'sp_defense', 'speed']
+
+
+def calcular_status(pokemons):
+    totais = dict.fromkeys(PREFIXOS, 0)
+    for pk in pokemons:
+        for chave, pref in zip(CHAVES, PREFIXOS):
+            totais[pref] += pk['base'][chave]
+    qtd = len(pokemons)
+    out = {}
+    for pref in PREFIXOS:
+        out[f'total_{pref}'] = totais[pref]
+        out[f'media_{pref}'] = totais[pref] // qtd if qtd > 0 else 0
+    return out
+
 
 @app.route('/')
-def main():
-
+def home():
     if 'usuario' not in session:
         return redirect('/login')
-
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as arquivo:
-        pokemom = json.load(arquivo)
-
-    return render_template('main.html', pokemom=pokemom)
+    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
+        pokemons = json.load(f)
+    return render_template('main.html', pokemom=pokemons)
 
 
-# ================= CADASTRO =================
-
-@app.route('/cadastrouser')
-def cadastro_page():
-    return render_template('cadastrouser.html')
-
-@app.route('/cadastrouser', methods=['POST'])
+@app.route('/cadastrouser', methods=['GET', 'POST'])
 def cadastro():
+    if request.method == 'GET':
+        return render_template('cadastrouser.html')
 
     nome = request.form['Nome']
     user = request.form['User']
     senha = request.form['Senha']
 
     if not user or not senha:
-        return render_template(
-            'cadastrouser.html',
-            erro="Prencha todos os campos"
-        )
+        return render_template('cadastrouser.html', erro="Preencha todos os campos")
 
     usuarios = carregar_usuarios()
+    for u in usuarios:
+        if user.lower() == u['user'].lower():
+            return render_template('cadastrouser.html', erro="Usuário já existe!")
 
-    for usuario in usuarios:
-        if user.lower() == usuario['user'].lower():
-            return render_template(
-                'cadastrouser.html',
-                erro="Usuário já existe!"
-            )
-
-    novo_usuario = {
+    usuarios.append({
         "id": len(usuarios) + 1,
-        "nome": nome,
-        "user": user,
-        "senha": senha,
-        "pokemons": []
-    }
-
-    usuarios.append(novo_usuario)
-
+        "nome": nome, "user": user,
+        "senha": senha, "pokemons": []
+    })
     salvar_usuarios(usuarios)
-
     return redirect('/login')
 
 
-# ================= LOGIN/LOGOUT =================
-
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
-
-
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        return render_template('login.html')
 
     user = request.form['User']
     senha = request.form['Senha']
 
     if not user or not senha:
-        return render_template(
-            'login.html',
-            erro="Prencha todos os campos"
-        )
+        return render_template('login.html', erro="Preencha todos os campos")
 
-    usuarios = carregar_usuarios()
-
-    for usuario in usuarios:
-
-        if (
-            user.lower() == usuario['user'].lower()
-            and senha == usuario['senha']
-        ):
-
-            session['usuario'] = usuario['user']
-
+    for u in carregar_usuarios():
+        if user.lower() == u['user'].lower() and senha == u['senha']:
+            session['usuario'] = u['user']
             return redirect('/')
 
-    return render_template(
-        'login.html',
-        erro="Usuário ou senha incorretos"
-    )
+    return render_template('login.html', erro="Usuário ou senha incorretos")
+
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/login')
 
-# ================= UNÇÃO STATUS =================
-def calcular_status(pokemons):
-
-    total_hp = 0
-    total_attack = 0
-    total_defense = 0
-    total_sp_attack = 0
-    total_sp_defense = 0
-    total_speed = 0
-
-    for pokemon in pokemons:
-
-        total_hp += pokemon['base']['HP']
-
-        total_attack += pokemon['base']['Attack']
-
-        total_defense += pokemon['base']['Defense']
-
-        total_sp_attack += pokemon['base']['Sp. Attack']
-
-        total_sp_defense += pokemon['base']['Sp. Defense']
-
-        total_speed += pokemon['base']['Speed']
-
-    quantidade = len(pokemons)
-
-    if quantidade > 0:
-
-        media_hp = total_hp // quantidade
-
-        media_attack = total_attack // quantidade
-
-        media_defense = total_defense // quantidade
-
-        media_sp_attack = total_sp_attack // quantidade
-
-        media_sp_defense = total_sp_defense // quantidade
-
-        media_speed = total_speed // quantidade
-
-    else:
-
-        media_hp = 0
-        media_attack = 0
-        media_defense = 0
-        media_sp_attack = 0
-        media_sp_defense = 0
-        media_speed = 0
-
-    return {
-
-        "total_hp": total_hp,
-        "total_attack": total_attack,
-        "total_defense": total_defense,
-        "total_sp_attack": total_sp_attack,
-        "total_sp_defense": total_sp_defense,
-        "total_speed": total_speed,
-
-        "media_hp": media_hp,
-        "media_attack": media_attack,
-        "media_defense": media_defense,
-        "media_sp_attack": media_sp_attack,
-        "media_sp_defense": media_sp_defense,
-        "media_speed": media_speed
-    }
-
-
-#================ POKEDEX =====================
 
 @app.route('/pokedex')
-def pokedex_page():
-
+def pokedex():
     if 'usuario' not in session:
         return redirect('/login')
 
-    usuarios = carregar_usuarios()
+    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
+        todos = json.load(f)
+    por_id = {p['id']: p for p in todos}
 
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as arquivo:
-        todos_pokemons = json.load(arquivo)
+    ids = []
+    for u in carregar_usuarios():
+        if u['user'] == session['usuario']:
+            ids = u.get('pokemons', [])
+            break
 
-    pokemom_sorteado = []
+    pokemons = [por_id[i] for i in ids if i in por_id]
+    status = calcular_status(pokemons)
+    erro = session.pop('erro', None)
 
-    for usuario in usuarios:
-
-        if usuario['user'] == session['usuario']:
-
-            ids_salvos = usuario.get('pokemons', [])
-
-            for pokemon in todos_pokemons:
-
-                if pokemon['id'] in ids_salvos:
-                    pokemom_sorteado.append(pokemon)
-
-    status = calcular_status(pokemom_sorteado)
-
-    return render_template(
-        'pokedex.html',
-
-        pokemom_sorteado=pokemom_sorteado,
-
-        total_hp=status['total_hp'],
-        total_attack=status['total_attack'],
-        total_defense=status['total_defense'],
-        total_sp_attack=status['total_sp_attack'],
-        total_sp_defense=status['total_sp_defense'],
-        total_speed=status['total_speed'],
-
-        media_hp=status['media_hp'],
-        media_attack=status['media_attack'],
-        media_defense=status['media_defense'],
-        media_sp_attack=status['media_sp_attack'],
-        media_sp_defense=status['media_sp_defense'],
-        media_speed=status['media_speed']
-    )
+    return render_template('pokedex.html', pokemom_sorteado=pokemons, erro=erro, **status)
 
 
 @app.route('/sortear')
 def sortear():
-
     if 'usuario' not in session:
         return redirect('/login')
 
     usuarios = carregar_usuarios()
-
     usuario_logado = None
-
-    for usuario in usuarios:
-
-        if usuario['user'] == session['usuario']:
-            usuario_logado = usuario
+    for u in usuarios:
+        if u['user'] == session['usuario']:
+            usuario_logado = u
             break
 
-    # impede novo sorteio
     if usuario_logado.get('pokemons'):
+        session['erro'] = "Você já sorteou seus pokémons!"
+        return redirect('/pokedex')
 
-        with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as arquivo:
-            todos_pokemons = json.load(arquivo)
+    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
+        todos = json.load(f)
 
-        pokemom_sorteado = []
-
-        for pokemon in todos_pokemons:
-
-            if pokemon['id'] in usuario_logado['pokemons']:
-                pokemom_sorteado.append(pokemon)
-
-        status = calcular_status(pokemom_sorteado)
-
-        return render_template(
-            'pokedex.html',
-
-            pokemom_sorteado=pokemom_sorteado,
-
-            total_hp=status['total_hp'],
-            total_attack=status['total_attack'],
-            total_defense=status['total_defense'],
-            total_sp_attack=status['total_sp_attack'],
-            total_sp_defense=status['total_sp_defense'],
-            total_speed=status['total_speed'],
-
-            media_hp=status['media_hp'],
-            media_attack=status['media_attack'],
-            media_defense=status['media_defense'],
-            media_sp_attack=status['media_sp_attack'],
-            media_sp_defense=status['media_sp_defense'],
-            media_speed=status['media_speed'],
-
-            erro="Você já sorteou seus pokémons!"
-        )
-
-    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as arquivo:
-        pokemom = json.load(arquivo)
-
-    pokemom_sorteado = random.sample(pokemom, 6)
-
-    ids_pokemom = []
-
-    for pokemon in pokemom_sorteado:
-        ids_pokemom.append(pokemon["id"])
-
-    usuario_logado['pokemons'] = ids_pokemom
-
+    sorteados = random.sample(todos, 6)
+    usuario_logado['pokemons'] = [p['id'] for p in sorteados]
     salvar_usuarios(usuarios)
 
-    status = calcular_status(pokemom_sorteado)
+    return render_template('pokedex.html', pokemom_sorteado=sorteados, **calcular_status(sorteados))
 
-    return render_template(
-        'pokedex.html',
 
-        pokemom_sorteado=pokemom_sorteado,
+@app.route('/comparar')
+def comparar():
+    if 'usuario' not in session:
+        return redirect('/login')
 
-        total_hp=status['total_hp'],
-        total_attack=status['total_attack'],
-        total_defense=status['total_defense'],
-        total_sp_attack=status['total_sp_attack'],
-        total_sp_defense=status['total_sp_defense'],
-        total_speed=status['total_speed'],
+    with open(ARQUIVO_POKEMON, 'r', encoding='utf-8') as f:
+        todos = json.load(f)
+    por_id = {p['id']: p for p in todos}
 
-        media_hp=status['media_hp'],
-        media_attack=status['media_attack'],
-        media_defense=status['media_defense'],
-        media_sp_attack=status['media_sp_attack'],
-        media_sp_defense=status['media_sp_defense'],
-        media_speed=status['media_speed']
-    )
-# ================= RUN =================
+    usuarios = carregar_usuarios()
+    times = []
+    for u in usuarios:
+        ids = u.get('pokemons', [])
+        pokemons = [por_id[i] for i in ids if i in por_id]
+        if not pokemons:
+            continue
+        times.append({
+            'nome': u['nome'],
+            'user': u['user'],
+            'pokemons': pokemons,
+            'status': calcular_status(pokemons),
+        })
+
+    return render_template('comparar.html', times=times, usuario_logado=session['usuario'])
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
