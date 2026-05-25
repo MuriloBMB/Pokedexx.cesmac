@@ -1,54 +1,70 @@
-{% extends "base.html" %}
-{% block title %}Comparar times{% endblock %}
-{% block content %}
-<div class="page-wrapper">
-    <h1>Comparar times</h1>
-    <p class="subtitle">{{ times|length }} treinadores com pokémons sorteados</p>
-
-    {% for time in times %}
-    <div class="profile-card {{ 'meu-time' if time.user == usuario_logado }}">
-        <div class="profile-header">
-            <h2>{{ time.nome }} <small>(@{{ time.user }})</small></h2>
-            {% if time.user == usuario_logado %}
-            <span class="profile-badge">Você</span>
-            {% endif %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/geral.css') }}">
+    <title>Comparar times</title>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">Pokédex</a>
+        <div>
+            <a class="nav-link" href="/pokedex">Meus Pokémons</a>
+            <a class="nav-link" href="/comparar">Comparar</a>
+            <a class="nav-link" href="/logout">Sair</a>
         </div>
-        <div class="profile-body">
-            <div class="team-grid">
-                {% for pk in time.pokemons %}
-                <div class="team-card">
-                    <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pk.id }}.png" alt="{{ pk.name.english }}">
-                    <h4>{{ pk.name.english }}</h4>
-                    <div>
-                        {% for t in pk.type %}
-                        <span class="type-badge type-{{ t }}">{{ t }}</span>
-                        {% endfor %}
+    </nav>
+
+    <div class="page-wrapper">
+        <h1>Comparar times</h1>
+        <p class="subtitle">{{ times|length }} treinadores com pokémons sorteados</p>
+
+        {% for time in times %}
+        <div class="profile-card {{ 'meu-time' if time.user == usuario_logado }}">
+            <div class="profile-header">
+                <h2>{{ time.nome }} <small>(@{{ time.user }})</small></h2>
+                {% if time.user == usuario_logado %}
+                <span class="profile-badge">Você</span>
+                {% endif %}
+            </div>
+            <div class="profile-body">
+                <div class="team-grid">
+                    {% for pk in time.pokemons %}
+                    <div class="team-card">
+                        <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pk.id }}.png" alt="{{ pk.name.english }}">
+                        <h4>{{ pk.name.english }}</h4>
+                        <div>
+                            {% for t in pk.type %}
+                            <span class="type-badge type-{{ t }}">{{ t }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="team-stats">
+                            <div class="ts"><span>HP</span> {{ pk.base.HP }}</div>
+                            <div class="ts"><span>Ataque</span> {{ pk.base.Attack }}</div>
+                            <div class="ts"><span>Defesa</span> {{ pk.base.Defense }}</div>
+                            <div class="ts"><span>Sp.Atk</span> {{ pk.base['Sp. Attack'] }}</div>
+                            <div class="ts"><span>Sp.Def</span> {{ pk.base['Sp. Defense'] }}</div>
+                            <div class="ts"><span>Vel.</span> {{ pk.base.Speed }}</div>
+                        </div>
                     </div>
-                    <div class="team-stats">
-                        <div class="ts"><span>HP</span> {{ pk.base.HP }}</div>
-                        <div class="ts"><span>Ataque</span> {{ pk.base.Attack }}</div>
-                        <div class="ts"><span>Defesa</span> {{ pk.base.Defense }}</div>
-                        <div class="ts"><span>Sp.Atk</span> {{ pk.base['Sp. Attack'] }}</div>
-                        <div class="ts"><span>Sp.Def</span> {{ pk.base['Sp. Defense'] }}</div>
-                        <div class="ts"><span>Vel.</span> {{ pk.base.Speed }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="stats-section">
+                    <h4>Status totais do time</h4>
+                    <div class="stats-grid">
+                        <div class="stat-box"><div class="stat-label">HP</div><div class="stat-value">{{ time.status.total_hp }}</div></div>
+                        <div class="stat-box"><div class="stat-label">Ataque</div><div class="stat-value">{{ time.status.total_attack }}</div></div>
+                        <div class="stat-box"><div class="stat-label">Defesa</div><div class="stat-value">{{ time.status.total_defense }}</div></div>
+                        <div class="stat-box"><div class="stat-label">Sp.Atk</div><div class="stat-value">{{ time.status.total_sp_attack }}</div></div>
+                        <div class="stat-box"><div class="stat-label">Sp.Def</div><div class="stat-value">{{ time.status.total_sp_defense }}</div></div>
+                        <div class="stat-box"><div class="stat-label">Vel.</div><div class="stat-value">{{ time.status.total_speed }}</div></div>
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-
-            <div class="stats-section">
-                <h4>Status totais do time</h4>
-                <div class="stats-grid">
-                    <div class="stat-box"><div class="stat-label">HP</div><div class="stat-value">{{ time.status.total_hp }}</div></div>
-                    <div class="stat-box"><div class="stat-label">Ataque</div><div class="stat-value">{{ time.status.total_attack }}</div></div>
-                    <div class="stat-box"><div class="stat-label">Defesa</div><div class="stat-value">{{ time.status.total_defense }}</div></div>
-                    <div class="stat-box"><div class="stat-label">Sp.Atk</div><div class="stat-value">{{ time.status.total_sp_attack }}</div></div>
-                    <div class="stat-box"><div class="stat-label">Sp.Def</div><div class="stat-value">{{ time.status.total_sp_defense }}</div></div>
-                    <div class="stat-box"><div class="stat-label">Vel.</div><div class="stat-value">{{ time.status.total_speed }}</div></div>
-                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-{% endblock %}
+</body>
+</html>

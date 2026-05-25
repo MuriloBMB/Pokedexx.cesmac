@@ -1,28 +1,33 @@
-{% extends "base.html" %}
-{% block title %}Cadastro{% endblock %}
-{% block body_class %}auth-page{% endblock %}
-{% block navbar %}{% endblock %}
-{% block content %}
-<div class="auth-card">
-    <h2>Criar sua conta</h2>
-    {% if erro %}
-    <div class="alert-custom">{{ erro }}</div>
-    {% endif %}
-    <form action="/cadastrouser" method="POST">
-        <div class="mb-3">
-            <label class="form-label">Nome</label>
-            <input type="text" name="Nome" class="form-control" placeholder="Seu nome" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Usuário</label>
-            <input type="text" name="User" class="form-control" placeholder="Nome de usuário" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Senha</label>
-            <input type="password" name="Senha" class="form-control" placeholder="Crie uma senha" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100 mb-2">Cadastrar</button>
-        <a href="/login" class="btn btn-secondary w-100">Já tenho conta</a>
-    </form>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/geral.css') }}">
+    <title>Cadastro</title>
+</head>
+<body class="auth-page">
+    <div class="auth-card">
+        <h2>Criar sua conta</h2>
+        {% if erro %}
+        <div class="alert-custom">{{ erro }}</div>
+        {% endif %}
+        <form action="/cadastrouser" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" name="Nome" class="form-control" placeholder="Seu nome" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Usuário</label>
+                <input type="text" name="User" class="form-control" placeholder="Nome de usuário" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Senha</label>
+                <input type="password" name="Senha" class="form-control" placeholder="Crie uma senha" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-2">Cadastrar</button>
+            <a href="/login" class="btn btn-secondary w-100">Já tenho conta</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -30,27 +30,53 @@ def carregar_pokemons():
         return []
 
 
-STATS_MAP = {
-    'hp': 'HP',
-    'attack': 'Attack',
-    'defense': 'Defense',
-    'sp_attack': 'Sp. Attack',
-    'sp_defense': 'Sp. Defense',
-    'speed': 'Speed',
-}
-
-
 def calcular_status(pokemons):
-    totais = dict.fromkeys(STATS_MAP, 0)
-    for pk in pokemons:
-        for pref, chave in STATS_MAP.items():
-            totais[pref] += pk['base'][chave]
-    qtd = len(pokemons)
-    out = {}
-    for pref in STATS_MAP:
-        out[f'total_{pref}'] = totais[pref]
-        out[f'media_{pref}'] = totais[pref] // qtd if qtd > 0 else 0
-    return out
+    total_hp = 0
+    total_attack = 0
+    total_defense = 0
+    total_sp_attack = 0
+    total_sp_defense = 0
+    total_speed = 0
+
+    for pokemon in pokemons:
+        total_hp += pokemon['base']['HP']
+        total_attack += pokemon['base']['Attack']
+        total_defense += pokemon['base']['Defense']
+        total_sp_attack += pokemon['base']['Sp. Attack']
+        total_sp_defense += pokemon['base']['Sp. Defense']
+        total_speed += pokemon['base']['Speed']
+
+    quantidade = len(pokemons)
+
+    if quantidade > 0:
+        media_hp = total_hp // quantidade
+        media_attack = total_attack // quantidade
+        media_defense = total_defense // quantidade
+        media_sp_attack = total_sp_attack // quantidade
+        media_sp_defense = total_sp_defense // quantidade
+        media_speed = total_speed // quantidade
+    else:
+        media_hp = 0
+        media_attack = 0
+        media_defense = 0
+        media_sp_attack = 0
+        media_sp_defense = 0
+        media_speed = 0
+
+    return {
+        "total_hp": total_hp,
+        "total_attack": total_attack,
+        "total_defense": total_defense,
+        "total_sp_attack": total_sp_attack,
+        "total_sp_defense": total_sp_defense,
+        "total_speed": total_speed,
+        "media_hp": media_hp,
+        "media_attack": media_attack,
+        "media_defense": media_defense,
+        "media_sp_attack": media_sp_attack,
+        "media_sp_defense": media_sp_defense,
+        "media_speed": media_speed,
+    }
 
 
 @app.route('/')
@@ -117,20 +143,43 @@ def pokedex():
     if 'usuario' not in session:
         return redirect('/login')
 
-    todos = carregar_pokemons()
-    por_id = {p['id']: p for p in todos}
+    todos_os_pokemons = carregar_pokemons()
+    pokemons_por_id = {}
+    for p in todos_os_pokemons:
+        pokemons_por_id[p['id']] = p
 
-    ids = []
-    for u in carregar_usuarios():
+    usuarios = carregar_usuarios()
+    ids_do_usuario = []
+    for u in usuarios:
         if u['user'] == session['usuario']:
-            ids = u.get('pokemons', [])
+            ids_do_usuario = u.get('pokemons', [])
             break
 
-    pokemons = [por_id[i] for i in ids if i in por_id]
+    pokemons = []
+    for id_pokemon in ids_do_usuario:
+        if id_pokemon in pokemons_por_id:
+            pokemons.append(pokemons_por_id[id_pokemon])
+
     status = calcular_status(pokemons)
     erro = session.pop('erro', None)
 
-    return render_template('pokedex.html', pokemons=pokemons, erro=erro, **status)
+    return render_template(
+        'pokedex.html',
+        pokemons=pokemons,
+        erro=erro,
+        total_hp=status['total_hp'],
+        total_attack=status['total_attack'],
+        total_defense=status['total_defense'],
+        total_sp_attack=status['total_sp_attack'],
+        total_sp_defense=status['total_sp_defense'],
+        total_speed=status['total_speed'],
+        media_hp=status['media_hp'],
+        media_attack=status['media_attack'],
+        media_defense=status['media_defense'],
+        media_sp_attack=status['media_sp_attack'],
+        media_sp_defense=status['media_sp_defense'],
+        media_speed=status['media_speed'],
+    )
 
 
 @app.route('/sortear')
@@ -139,15 +188,27 @@ def sortear():
         return redirect('/login')
 
     usuarios = carregar_usuarios()
-    usuario_logado = next((u for u in usuarios if u['user'] == session['usuario']), None)
+    usuario_logado = None
+    for u in usuarios:
+        if u['user'] == session['usuario']:
+            usuario_logado = u
+            break
+
+    if usuario_logado is None:
+        return redirect('/login')
 
     if usuario_logado.get('pokemons'):
         session['erro'] = "Você já sorteou seus pokémons!"
         return redirect('/pokedex')
 
-    todos = carregar_pokemons()
-    sorteados = random.sample(todos, 6)
-    usuario_logado['pokemons'] = [p['id'] for p in sorteados]
+    todos_os_pokemons = carregar_pokemons()
+    pokemons_sorteados = random.sample(todos_os_pokemons, 6)
+
+    ids_sorteados = []
+    for pokemon in pokemons_sorteados:
+        ids_sorteados.append(pokemon['id'])
+
+    usuario_logado['pokemons'] = ids_sorteados
     salvar_usuarios(usuarios)
 
     return redirect('/pokedex')
@@ -158,21 +219,29 @@ def comparar():
     if 'usuario' not in session:
         return redirect('/login')
 
-    todos = carregar_pokemons()
-    por_id = {p['id']: p for p in todos}
+    todos_os_pokemons = carregar_pokemons()
+    pokemons_por_id = {}
+    for p in todos_os_pokemons:
+        pokemons_por_id[p['id']] = p
 
     usuarios = carregar_usuarios()
     times = []
     for u in usuarios:
         ids = u.get('pokemons', [])
-        pokemons = [por_id[i] for i in ids if i in por_id]
-        if not pokemons:
+        pokemons_do_time = []
+        for id_pokemon in ids:
+            if id_pokemon in pokemons_por_id:
+                pokemons_do_time.append(pokemons_por_id[id_pokemon])
+
+        if len(pokemons_do_time) == 0:
             continue
+
+        status = calcular_status(pokemons_do_time)
         times.append({
             'nome': u['nome'],
             'user': u['user'],
-            'pokemons': pokemons,
-            'status': calcular_status(pokemons),
+            'pokemons': pokemons_do_time,
+            'status': status,
         })
 
     return render_template('comparar.html', times=times, usuario_logado=session['usuario'])

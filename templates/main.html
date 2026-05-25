@@ -1,31 +1,47 @@
-{% extends "base.html" %}
-{% block title %}Pokédex{% endblock %}
-{% block content %}
-<div class="page-wrapper">
-    <h1>Todos os Pokémons</h1>
-    <p class="subtitle">{{ pokemons|length }} espécies registradas</p>
-
-    <div class="pokemon-grid">
-        {% for pokemon in pokemons %}
-        <div class="pokemon-card">
-            <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" alt="{{ pokemon.name.english }}">
-            <div class="pokemon-id">#{{ "%03d"|format(pokemon.id) }}</div>
-            <h3>{{ pokemon.name.english }}</h3>
-            <div>
-                {% for t in pokemon.type %}
-                <span class="type-badge type-{{ t }}">{{ t }}</span>
-                {% endfor %}
-            </div>
-            <div class="stats">
-                <div class="stat"><span>HP</span> {{ pokemon.base.HP }}</div>
-                <div class="stat"><span>Ataque</span> {{ pokemon.base.Attack }}</div>
-                <div class="stat"><span>Defesa</span> {{ pokemon.base.Defense }}</div>
-                <div class="stat"><span>Sp.Atk</span> {{ pokemon.base['Sp. Attack'] }}</div>
-                <div class="stat"><span>Sp.Def</span> {{ pokemon.base['Sp. Defense'] }}</div>
-                <div class="stat"><span>Vel.</span> {{ pokemon.base.Speed }}</div>
-            </div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/geral.css') }}">
+    <title>Pokédex</title>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="/">Pokédex</a>
+        <div>
+            <a class="nav-link" href="/pokedex">Meus Pokémons</a>
+            <a class="nav-link" href="/comparar">Comparar</a>
+            <a class="nav-link" href="/logout">Sair</a>
         </div>
-        {% endfor %}
+    </nav>
+
+    <div class="page-wrapper">
+        <h1>Todos os Pokémons</h1>
+        <p class="subtitle">{{ pokemons|length }} espécies registradas</p>
+
+        <div class="pokemon-grid">
+            {% for pokemon in pokemons %}
+            <div class="pokemon-card">
+                <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" alt="{{ pokemon.name.english }}">
+                <div class="pokemon-id">#{{ "%03d"|format(pokemon.id) }}</div>
+                <h3>{{ pokemon.name.english }}</h3>
+                <div>
+                    {% for t in pokemon.type %}
+                    <span class="type-badge type-{{ t }}">{{ t }}</span>
+                    {% endfor %}
+                </div>
+                <div class="stats">
+                    <div class="stat"><span>HP</span> {{ pokemon.base.HP }}</div>
+                    <div class="stat"><span>Ataque</span> {{ pokemon.base.Attack }}</div>
+                    <div class="stat"><span>Defesa</span> {{ pokemon.base.Defense }}</div>
+                    <div class="stat"><span>Sp.Atk</span> {{ pokemon.base['Sp. Attack'] }}</div>
+                    <div class="stat"><span>Sp.Def</span> {{ pokemon.base['Sp. Defense'] }}</div>
+                    <div class="stat"><span>Vel.</span> {{ pokemon.base.Speed }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
-{% endblock %}
+</body>
+</html>
