@@ -1,189 +1,390 @@
-body{
-    background-image: url("../img/fundo.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.login-box {
-    background: linear-gradient(135deg, #ff3c3c, #ffcc00);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    color: white;
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f4f6f9;
+    color: #2d3436;
+    min-height: 100vh;
 }
-.main{
-    padding: 10%;
+
+/* Navbar */
+.navbar {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 0.75rem 1.5rem;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #e17055 !important;
+}
+
+.nav-link {
+    color: #636e72 !important;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: #e17055 !important;
+}
+
+/* Auth Pages (login / cadastro) */
+.auth-page {
+    min-height: 100vh;
     display: flex;
-    flex-wrap: wrap;        
-    gap: 20px;              
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.auth-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #2d3436;
+}
+
+.auth-card .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #636e72;
+    margin-bottom: 0.35rem;
+}
+
+.auth-card .form-control {
+    border: 2px solid #dfe6e9;
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.auth-card .form-control:focus {
+    border-color: #667eea;
+    box-shadow: none;
+}
+
+.auth-card .btn {
+    border-radius: 10px;
+    padding: 0.65rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.auth-card .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.auth-card .btn-primary {
+    background: #667eea;
+    border: none;
+}
+
+.auth-card .btn-secondary {
+    background: #dfe6e9;
+    color: #2d3436;
+    border: none;
+}
+
+.auth-card .btn-secondary:hover {
+    background: #b2bec3;
+}
+
+.auth-card .alert {
+    border-radius: 10px;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+}
+
+/* Main Pokemon Grid */
+.page-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+.page-wrapper h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page-wrapper .subtitle {
+    color: #636e72;
+    margin-bottom: 2rem;
+}
+
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.pokemon-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.pokemon-card .pokemon-id {
+    font-size: 0.8rem;
+    color: #b2bec3;
+    font-weight: 600;
+}
+
+.pokemon-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0.5rem;
+}
+
+.pokemon-card .type-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    margin-right: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.type-Normal { background: #A8A77A; color: #fff; }
+.type-Fire { background: #EE8130; color: #fff; }
+.type-Water { background: #6390F0; color: #fff; }
+.type-Electric { background: #F7D02C; color: #333; }
+.type-Grass { background: #7AC74C; color: #fff; }
+.type-Ice { background: #96D9D6; color: #333; }
+.type-Fighting { background: #C22E28; color: #fff; }
+.type-Poison { background: #A33EA1; color: #fff; }
+.type-Ground { background: #E2BF65; color: #333; }
+.type-Flying { background: #A98FF3; color: #fff; }
+.type-Psychic { background: #F95587; color: #fff; }
+.type-Bug { background: #A6B91A; color: #fff; }
+.type-Rock { background: #B6A136; color: #fff; }
+.type-Ghost { background: #735797; color: #fff; }
+.type-Dragon { background: #6F35FC; color: #fff; }
+.type-Dark { background: #705746; color: #fff; }
+.type-Steel { background: #B7B7CE; color: #333; }
+.type-Fairy { background: #D685AD; color: #fff; }
+
+.pokemon-card .stats {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem 0.6rem;
+}
+
+.pokemon-card .stat {
+    font-size: 0.78rem;
+    color: #636e72;
+}
+
+.pokemon-card .stat span {
+    font-weight: 700;
+    color: #2d3436;
+}
+
+/* Pokedex / Profile Page */
+.pokedex-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
-.card:hover{
-    transform: translateY(-20px);
-    opacity: 1;
+.profile-header h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
 }
 
-
-/* JANELA */
-
-.perfil-window{
-    width: 850px;
-
-    background-color: white;
-
-    border-radius: 25px;
-
-    overflow: hidden;
-
-    box-shadow: 0px 15px 35px rgba(0,0,0,0.25);
+.profile-body {
+    padding: 2rem;
 }
 
-
-/* TOPO */
-
-.top-bar{
-    height: 60px;
-
-    background-color: #f1f1f1;
-
-    border-bottom: 1px solid #dcdcdc;
-
+.profile-body .trainer-info {
     display: flex;
-
     align-items: center;
-
-    justify-content: center;
-
-    position: relative;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
-
-/* BOLINHAS */
-
-.bolinhas{
-    position: absolute;
-
-    left: 20px;
-
-    display: flex;
-
-    gap: 10px;
-}
-
-.bolinhas span{
-    width: 14px;
-
-    height: 14px;
-
+.profile-body .trainer-avatar {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-}
-
-.red{
-    background-color: #ff5f57;
-}
-
-.yellow{
-    background-color: #febc2e;
-}
-
-.green{
-    background-color: #28c840;
-}
-
-
-/* TÍTULO */
-
-.titulo-topo{
-    color: #666;
-
-    margin: 0;
-}
-
-
-/* CONTEÚDO */
-
-.perfil-content{
-    display: flex;
-
-    align-items: center;
-
-    gap: 30px;
-
-    padding: 50px;
-}
-
-
-/* FOTO */
-
-.foto-perfil{
-    width: 120px;
-
-    height: 120px;
-
-    border-radius: 50%;
-
-    overflow: hidden;
-
-    flex-shrink: 0;
-
-    border: 4px solid #f1f1f1;
-}
-
-.foto-perfil img{
-    width: 100%;
-
-    height: 100%;
-
+    border: 3px solid #667eea;
     object-fit: cover;
 }
 
-
-/* INFORMAÇÕES */
-
-.info-user h1{
-    font-size: 55px;
-
-    color: #333;
+.profile-body .trainer-name {
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
-.info-user p{
-    font-size: 24px;
-
-    color: #777;
+.profile-body .trainer-title {
+    color: #636e72;
+    font-size: 0.9rem;
 }
 
+.stats-section {
+    margin-bottom: 1.5rem;
+}
 
-/* RODAPÉ */
+.stats-section h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #b2bec3;
+    margin-bottom: 0.75rem;
+}
 
-.footer-info{
-    border-top: 1px solid #dcdcdc;
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
 
+.stat-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+}
+
+.stat-box .stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #636e72;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.stat-box .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin-top: 0.15rem;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.team-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    text-align: center;
+}
+
+.team-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.team-card .team-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    text-align: left;
+}
+
+.team-card .team-stats .ts {
+    font-size: 0.78rem;
+    color: #636e72;
+}
+
+.team-card .team-stats .ts span {
+    font-weight: 700;
+    color: #2d3436;
+}
+
+.empty-slot {
+    background: #f8f9fa;
+    border: 2px dashed #dfe6e9;
+    border-radius: 16px;
     display: flex;
-
-    justify-content: space-around;
-
-    padding: 30px;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    color: #b2bec3;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
-
-.info-box{
-    background-color: #f8f9fa;
-
-    padding: 20px 40px;
-
-    border-radius: 20px;
-
-    font-size: 20px;
-
-    font-weight: bold;
-
-    transition: 0.3s;
+.btn-draw {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.info-box:hover{
-    transform: translateY(-5px);
+.btn-draw:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.35);
+    color: #fff;
+}
 
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+.alert-custom {
+    background: #ffeaa7;
+    border: none;
+    border-radius: 12px;
+    color: #2d3436;
+    font-weight: 500;
+    padding: 0.75rem 1.25rem;
 }
