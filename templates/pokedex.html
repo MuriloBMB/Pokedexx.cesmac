@@ -17,7 +17,7 @@
 
     <div class="pokedex-page">
         {% if erro %}
-        <div class="alert-custom mb-4">{{ erro }}</div>
+        <div class="alert-custom">{{ erro }}</div>
         {% endif %}
 
         <div class="profile-card">
@@ -69,7 +69,7 @@
             <div class="team-card">
                 <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" alt="{{ pokemon.name.english }}">
                 <h4>{{ pokemon.name.english }}</h4>
-                <div class="mb-2">
+                <div>
                     {% for t in pokemon.type %}
                     <span class="type-badge type-{{ t }}">{{ t }}</span>
                     {% endfor %}
@@ -94,7 +94,7 @@
         </div>
         {% endif %}
 
-        <div class="text-center">
+        <div style="text-align: center;">
             <a href="/sortear" class="btn-draw">Sortear Pokémons</a>
         </div>
     </div>

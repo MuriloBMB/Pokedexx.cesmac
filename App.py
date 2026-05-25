@@ -1,17 +1,11 @@
 from flask import Flask, request, redirect, render_template, session
 import json
 import random
-import os
-
-app = Flask(__name__)
-app.secret_key = 'pokemon123'
-
-ARQUIVO_USERS = 'user.json'
-ARQUIVO_POKEMON = 'pokemom.json'
-
-
 def carregar_usuarios():
-    if not os.path.exists(ARQUIVO_USERS):
+    try:
+        with open(ARQUIVO_USERS, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
         return []
     with open(ARQUIVO_USERS, 'r', encoding='utf-8') as f:
         try:

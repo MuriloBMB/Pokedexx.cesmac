@@ -10,7 +10,7 @@
     <div class="auth-card">
         <h2>Criar sua conta</h2>
         {% if erro %}
-        <div class="alert alert-danger">{{ erro }}</div>
+        <div class="alert-custom">{{ erro }}</div>
         {% endif %}
         <form action="/cadastrouser" method="POST">
             <div class="mb-3">

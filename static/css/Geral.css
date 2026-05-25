@@ -30,17 +30,17 @@ body {
 .navbar-brand {
     font-weight: 700;
     font-size: 1.25rem;
-    color: #e17055 !important;
+    color: #e17055;
 }
 
 .nav-link {
-    color: #636e72 !important;
+    color: #636e72;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .nav-link:hover {
-    color: #e17055 !important;
+    color: #e17055;
 }
 
 /* Auth Pages (login / cadastro) */

@@ -10,7 +10,7 @@
     <div class="auth-card">
         <h2>Bem-vindo de volta</h2>
         {% if erro %}
-        <div class="alert alert-danger">{{ erro }}</div>
+        <div class="alert-custom">{{ erro }}</div>
         {% endif %}
         <form action="/login" method="POST">
             <div class="mb-3">
