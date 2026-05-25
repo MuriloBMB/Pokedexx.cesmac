@@ -161,6 +161,19 @@ body {
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
+.pokemon-sprite {
+    display: block;
+    margin: 0 auto;
+    width: 96px;
+    height: 96px;
+    image-rendering: pixelated;
+}
+
+.team-card .pokemon-sprite {
+    width: 80px;
+    height: 80px;
+}
+
 .pokemon-card .pokemon-id {
     font-size: 0.8rem;
     color: #b2bec3;

@@ -67,6 +67,7 @@
         <div class="team-grid">
             {% for pokemon in pokemom_sorteado %}
             <div class="team-card">
+                <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" alt="{{ pokemon.name.english }}">
                 <h4>{{ pokemon.name.english }}</h4>
                 <div class="mb-2">
                     {% for t in pokemon.type %}

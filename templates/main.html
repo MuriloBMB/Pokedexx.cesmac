@@ -22,6 +22,7 @@
         <div class="pokemon-grid">
             {% for pokemom in pokemom %}
             <div class="pokemon-card">
+                <img class="pokemon-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemom.id }}.png" alt="{{ pokemom.name.english }}">
                 <div class="pokemon-id">#{{ "%03d"|format(pokemom.id) }}</div>
                 <h3>{{ pokemom.name.english }}</h3>
                 <div>
