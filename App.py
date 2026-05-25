@@ -1,17 +1,20 @@
 from flask import Flask, request, redirect, render_template, session
 import json
 import random
+
+app = Flask(__name__)
+app.secret_key = 'pokemon123'
+
+ARQUIVO_USERS = 'user.json'
+ARQUIVO_POKEMON = 'pokemom.json'
+
+
 def carregar_usuarios():
     try:
         with open(ARQUIVO_USERS, 'r', encoding='utf-8') as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return []
-    with open(ARQUIVO_USERS, 'r', encoding='utf-8') as f:
-        try:
-            return json.load(f)
-        except:
-            return []
 
 
 def salvar_usuarios(usuarios):
@@ -21,6 +24,7 @@ def salvar_usuarios(usuarios):
 
 CHAVES = ['HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed']
 PREFIXOS = ['hp', 'attack', 'defense', 'sp_attack', 'sp_defense', 'speed']
+
 
 def calcular_status(pokemons):
     totais = dict.fromkeys(PREFIXOS, 0)
